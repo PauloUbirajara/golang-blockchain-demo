@@ -1,2 +1,2 @@
 # Golang Blockchain Demo
-Repositório para representar a mineração de blocos em uma blockchain simulada em Golang
+Repositório para simular a mineração em uma blockchain ao criar manualmente os blocos e hashes em Golang
