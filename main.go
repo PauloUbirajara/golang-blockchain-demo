@@ -7,15 +7,15 @@ import (
 )
 
 type Block struct {
+	Content      string
+	CurrentHash  string
 	Index        int
 	Nounce       int
-	Content      string
-	Timestamp    time.Time
 	PreviousHash string
-	CurrentHash  string
+	Timestamp    time.Time
 }
 
-func (b *Block) String() string {
+func (b *Block) StringForSHA256() string {
 	finalString := ""
 
 	finalString += fmt.Sprintln("Conteúdo:", b.Content)
