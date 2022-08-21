@@ -25,10 +25,41 @@ func (b *Block) StringForSHA256() string {
 	return finalString
 }
 
+func (b *Block) Print() {
+	finalString := ""
+
+	finalString += fmt.Sprintln("Index:", b.Index)
+	finalString += fmt.Sprintln("Nounce:", b.Nounce)
+	finalString += fmt.Sprintln("Conteúdo:", b.Content)
+	finalString += fmt.Sprintln("Timestamp:", b.Timestamp)
+	finalString += fmt.Sprintln("Hash atual:", b.CurrentHash)
+	finalString += fmt.Sprintln("Hash anterior:", b.PreviousHash)
+
+	fmt.Println(finalString)
+}
+
 func HashToString(hash []byte) string {
 	finalString := fmt.Sprintf("%x", hash)
 
 	return finalString
+}
+
+func CheckIfValidHash(hashString string, expectedZeros int) bool {
+	zeroCount := 0
+
+	for _, letter := range hashString {
+		if letter != '0' {
+			break
+		}
+
+		zeroCount++
+
+		if zeroCount > expectedZeros {
+			return false
+		}
+	}
+
+	return zeroCount == expectedZeros
 }
 
 func (b *Block) SearchHash(difficulty int) {
@@ -36,22 +67,13 @@ func (b *Block) SearchHash(difficulty int) {
 	b.Timestamp = time.Now()
 
 	for {
-		currentHash := sha256.Sum256([]byte(b.String()))
-		validHash := true
-		fmt.Println(HashToString(currentHash[:]))
+		currentHash := sha256.Sum256([]byte(b.StringForSHA256()))
+		hashString := HashToString(currentHash[:])
 
-		for i, letter := range currentHash {
-			if i >= difficulty {
-				break
-			}
-			if letter != '0' {
-				validHash = false
-				break
-			}
-		}
+		println(hashString)
 
-		if validHash {
-			b.CurrentHash = HashToString(currentHash[:])
+		if CheckIfValidHash(hashString, difficulty) {
+			b.CurrentHash = hashString
 			return
 		}
 
