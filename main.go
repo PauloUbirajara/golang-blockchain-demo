@@ -82,9 +82,10 @@ func (b *Block) SearchHash(difficulty int) {
 }
 
 func main() {
-	b := Block{}
-	fmt.Println(b.String())
+	b := Block{
+		Content: "Primeiro bloco",
+		Index:   1,
+	}
 	b.SearchHash(1)
-	fmt.Println(b)
-	// TODO Fazer um método para imprimir melhor o bloco
+	b.Print()
 }
