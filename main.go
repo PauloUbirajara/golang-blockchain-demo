@@ -3,15 +3,16 @@ package main
 import (
 	"crypto/sha256"
 	"fmt"
+	"time"
 )
 
 type Block struct {
 	Index        int
 	Nounce       int
 	Content      string
-	Timestamp    string
-	PreviousHash []byte
-	CurrentHash  []byte
+	Timestamp    time.Time
+	PreviousHash string
+	CurrentHash  string
 }
 
 func (b *Block) String() string {
@@ -32,7 +33,7 @@ func HashToString(hash []byte) string {
 
 func (b *Block) SearchHash(difficulty int) {
 	b.Nounce = 1
-	b.Timestamp = "xx/xx/xxxx"
+	b.Timestamp = time.Now()
 
 	for {
 		currentHash := sha256.Sum256([]byte(b.String()))
@@ -50,7 +51,7 @@ func (b *Block) SearchHash(difficulty int) {
 		}
 
 		if validHash {
-			b.CurrentHash = currentHash[:]
+			b.CurrentHash = HashToString(currentHash[:])
 			return
 		}
 
