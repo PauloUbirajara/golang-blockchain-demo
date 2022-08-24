@@ -110,10 +110,20 @@ func NewBlock(blocks []Block, content string, difficulty int) Block {
 }
 
 func main() {
-	b := Block{
-		Content: "Primeiro bloco",
-		Index:   1,
+	blocks := make([]Block, 0)
+	DIFFICULTY := 3
+	BLOCK_COUNT := 25
+
+	// Primeiro bloco - Gênesis
+	blocks = append(blocks, Genesis("Primeiro bloco", DIFFICULTY))
+
+	// Resto dos blocos
+	for i := 0; i < BLOCK_COUNT; i++ {
+		blockContent := fmt.Sprintf("Bloco %d", i)
+		blocks = append(blocks, NewBlock(blocks, blockContent, DIFFICULTY))
 	}
-	b.SearchHash(1)
-	b.Print()
+
+	for _, b := range blocks {
+		b.Print()
+	}
 }
