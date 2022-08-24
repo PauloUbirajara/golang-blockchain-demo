@@ -82,6 +82,33 @@ func (b *Block) SearchHash(difficulty int) {
 	}
 }
 
+func Genesis(content string, difficulty int) Block {
+	DEFAULT_PREVIOUS_HASH := "secret"
+
+	b := Block{
+		Content:      content,
+		Index:        0,
+		PreviousHash: DEFAULT_PREVIOUS_HASH,
+	}
+
+	b.SearchHash(difficulty)
+
+	return b
+}
+
+func NewBlock(blocks []Block, content string, difficulty int) Block {
+	lastBlock := blocks[len(blocks)-1]
+	b := Block{
+		Index:        lastBlock.Index + 1,
+		Content:      content,
+		PreviousHash: lastBlock.CurrentHash,
+	}
+
+	b.SearchHash(difficulty)
+
+	return b
+}
+
 func main() {
 	b := Block{
 		Content: "Primeiro bloco",
