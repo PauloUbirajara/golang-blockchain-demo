@@ -1,129 +1,56 @@
 package main
 
 import (
-	"crypto/sha256"
+	"encoding/json"
 	"fmt"
-	"time"
+	b "golang-blockchain-demo/basic"
+	"io/ioutil"
+	"log"
+	"os"
 )
 
-type Block struct {
-	Content      string
-	CurrentHash  string
-	Index        int
-	Nounce       int
-	PreviousHash string
-	Timestamp    time.Time
-}
+func readJsonFile() []b.Block {
+	jsonFile, err := os.Open("blocks.json")
 
-func (b *Block) StringForSHA256() string {
-	finalString := ""
-
-	finalString += fmt.Sprintln("Conteúdo:", b.Content)
-	finalString += fmt.Sprintln("Timestamp:", b.Timestamp)
-	finalString += fmt.Sprintln("Nounce:", b.Nounce)
-	finalString += fmt.Sprintln("Hash Anterior:", b.PreviousHash)
-
-	return finalString
-}
-
-func (b *Block) Print() {
-	finalString := ""
-
-	finalString += fmt.Sprintln("Index:", b.Index)
-	finalString += fmt.Sprintln("Nounce:", b.Nounce)
-	finalString += fmt.Sprintln("Conteúdo:", b.Content)
-	finalString += fmt.Sprintln("Timestamp:", b.Timestamp)
-	finalString += fmt.Sprintln("Hash atual:", b.CurrentHash)
-	finalString += fmt.Sprintln("Hash anterior:", b.PreviousHash)
-
-	fmt.Println(finalString)
-}
-
-func HashToString(hash []byte) string {
-	finalString := fmt.Sprintf("%x", hash)
-
-	return finalString
-}
-
-func CheckIfValidHash(hashString string, expectedZeros int) bool {
-	zeroCount := 0
-
-	for _, letter := range hashString {
-		if letter != '0' {
-			break
-		}
-
-		zeroCount++
-
-		if zeroCount > expectedZeros {
-			return false
-		}
+	if err != nil {
+		
+		log.Fatal(err)
 	}
+	fmt.Println("File Opened succesfully!")
 
-	return zeroCount == expectedZeros
-}
+	defer jsonFile.Close()
 
-func (b *Block) SearchHash(difficulty int) {
-	b.Nounce = 1
-	b.Timestamp = time.Now()
+	byteValue, _ := ioutil.ReadAll(jsonFile) 
 
-	for {
-		currentHash := sha256.Sum256([]byte(b.StringForSHA256()))
-		hashString := HashToString(currentHash[:])
+	var blocks []b.Block
+	json.Unmarshal(byteValue, &blocks)
 
-		println(hashString)
-
-		if CheckIfValidHash(hashString, difficulty) {
-			b.CurrentHash = hashString
-			return
-		}
-
-		b.Nounce++
-	}
-}
-
-func Genesis(content string, difficulty int) Block {
-	DEFAULT_PREVIOUS_HASH := "secret"
-
-	b := Block{
-		Content:      content,
-		Index:        0,
-		PreviousHash: DEFAULT_PREVIOUS_HASH,
-	}
-
-	b.SearchHash(difficulty)
-
-	return b
-}
-
-func NewBlock(blocks []Block, content string, difficulty int) Block {
-	lastBlock := blocks[len(blocks)-1]
-	b := Block{
-		Index:        lastBlock.Index + 1,
-		Content:      content,
-		PreviousHash: lastBlock.CurrentHash,
-	}
-
-	b.SearchHash(difficulty)
-
-	return b
+	return blocks
 }
 
 func main() {
-	blocks := make([]Block, 0)
 	DIFFICULTY := 3
 	BLOCK_COUNT := 25
+	var blocks []b.Block
 
-	// Primeiro bloco - Gênesis
-	blocks = append(blocks, Genesis("Primeiro bloco", DIFFICULTY))
+	blocks = readJsonFile();
+	if blocks == nil {
+		blocks = make([]b.Block, 0)
+
+		// Primeiro bloco - Gênesis
+		blocks = append(blocks, b.Genesis("Primeiro bloco", DIFFICULTY))
+	}
 
 	// Resto dos blocos
 	for i := 0; i < BLOCK_COUNT; i++ {
 		blockContent := fmt.Sprintf("Bloco %d", i)
-		blocks = append(blocks, NewBlock(blocks, blockContent, DIFFICULTY))
+		blocks = append(blocks, b.NewBlock(blocks, blockContent, DIFFICULTY))
 	}
 
 	for _, b := range blocks {
 		b.Print()
 	}
+
+	file, _ := json.MarshalIndent(blocks, "", "  ")
+	_ = ioutil.WriteFile("blocks.json", file, 0644);
 }
