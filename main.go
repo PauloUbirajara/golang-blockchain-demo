@@ -32,8 +32,7 @@ func ReadJSONFile() []b.Block {
 
 func main() {
 	DIFFICULTY := 3
-	BLOCK_COUNT := 25
-	var blocks []b.Block
+	BLOCK_COUNT := 2
 
 	blockchain := b.Blockchain{
 		Blocks: ReadJSONFile(),
