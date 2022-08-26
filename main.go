@@ -39,10 +39,10 @@ func main() {
 		Blocks: ReadJSONFile(),
 	}
 
-	// Resto dos blocos
+	// Adicionar N blocos, incluindo o genesis se "blockchain" iniciar vazio
 	for i := 0; i < BLOCK_COUNT; i++ {
-		blockContent := fmt.Sprintf("Bloco %d", i)
-		blocks = append(blocks, b.NewBlock(blocks, blockContent, DIFFICULTY))
+		blockContent := fmt.Sprintf("Bloco %d", i+1)
+		blockchain.NewBlock(blockContent, DIFFICULTY)
 	}
 
 	for _, b := range blocks {
