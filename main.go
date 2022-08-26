@@ -35,12 +35,8 @@ func main() {
 	BLOCK_COUNT := 25
 	var blocks []b.Block
 
-	blocks = readJsonFile();
-	if blocks == nil {
-		blocks = make([]b.Block, 0)
-
-		// Primeiro bloco - Gênesis
-		blocks = append(blocks, b.Genesis("Primeiro bloco", DIFFICULTY))
+	blockchain := b.Blockchain{
+		Blocks: ReadJSONFile(),
 	}
 
 	// Resto dos blocos
