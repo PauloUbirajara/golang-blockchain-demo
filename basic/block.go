@@ -9,6 +9,7 @@ import (
 type Block struct {
 	Content      string
 	CurrentHash  string
+	Difficulty   int
 	Index        int
 	Nounce       int
 	PreviousHash string
@@ -35,6 +36,7 @@ func (b *Block) Print() {
 	finalString += fmt.Sprintln("Timestamp:", b.Timestamp)
 	finalString += fmt.Sprintln("Hash atual:", b.CurrentHash)
 	finalString += fmt.Sprintln("Hash anterior:", b.PreviousHash)
+	finalString += fmt.Sprintln("Dificuldade:", b.Difficulty)
 
 	fmt.Println(finalString)
 }
@@ -66,6 +68,7 @@ func CheckIfValidHash(hashString string, expectedZeros int) bool {
 func (b *Block) SearchHash(difficulty int) {
 	b.Nounce = 1
 	b.Timestamp = time.Now()
+	b.Difficulty = difficulty
 
 	for {
 		currentHash := sha256.Sum256([]byte(b.StringForSHA256()))
