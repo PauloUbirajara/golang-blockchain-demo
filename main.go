@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	b "golang-blockchain-demo/basic"
+	"io/fs"
 	"io/ioutil"
 	"log"
 	"os"
@@ -52,6 +53,6 @@ func main() {
 		b.Print()
 	}
 
-	file, _ := json.MarshalIndent(blocks, "", "  ")
-	_ = ioutil.WriteFile("blocks.json", file, 0644);
+	file, _ := json.MarshalIndent(blockchain.Blocks, "", "  ")
+	_ = ioutil.WriteFile("blocks.json", file, fs.ModeAppend.Perm())
 }
