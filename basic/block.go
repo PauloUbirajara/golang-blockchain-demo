@@ -42,30 +42,6 @@ func (b *Block) Print() {
 	fmt.Println(finalString)
 }
 
-func HashToString(hash []byte) string {
-	finalString := fmt.Sprintf("%x", hash)
-
-	return finalString
-}
-
-func CheckIfValidHash(hashString string, expectedZeros int) bool {
-	zeroCount := 0
-
-	for _, letter := range hashString {
-		if letter != '0' {
-			break
-		}
-
-		zeroCount++
-
-		if zeroCount > expectedZeros {
-			return false
-		}
-	}
-
-	return zeroCount == expectedZeros
-}
-
 func (b *Block) SearchHash(difficulty int) {
 	b.Nounce = 1
 	b.Timestamp = time.Now()
