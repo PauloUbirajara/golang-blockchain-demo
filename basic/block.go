@@ -19,6 +19,7 @@ type Block struct {
 func (b *Block) StringForSHA256() string {
 	finalString := ""
 
+	finalString += fmt.Sprintln("Index:", b.Index)
 	finalString += fmt.Sprintln("Conteúdo:", b.Content)
 	finalString += fmt.Sprintln("Timestamp:", b.Timestamp)
 	finalString += fmt.Sprintln("Nounce:", b.Nounce)
