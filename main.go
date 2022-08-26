@@ -9,18 +9,19 @@ import (
 	"os"
 )
 
-func readJsonFile() []b.Block {
+func ReadJSONFile() []b.Block {
 	jsonFile, err := os.Open("blocks.json")
 
 	if err != nil {
-		
-		log.Fatal(err)
+		log.Println(err)
+		return make([]b.Block, 0)
 	}
+
 	fmt.Println("File Opened succesfully!")
 
 	defer jsonFile.Close()
 
-	byteValue, _ := ioutil.ReadAll(jsonFile) 
+	byteValue, _ := ioutil.ReadAll(jsonFile)
 
 	var blocks []b.Block
 	json.Unmarshal(byteValue, &blocks)
