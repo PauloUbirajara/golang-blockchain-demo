@@ -45,9 +45,7 @@ func main() {
 		blockchain.NewBlock(blockContent, DIFFICULTY)
 	}
 
-	for _, b := range blocks {
-		b.Print()
-	}
+	blockchain.PrintBlocks()
 
 	file, _ := json.MarshalIndent(blockchain.Blocks, "", "  ")
 	_ = ioutil.WriteFile("blocks.json", file, fs.ModeAppend.Perm())
