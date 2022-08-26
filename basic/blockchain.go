@@ -25,10 +25,6 @@ func (bc *Blockchain) NewBlock(content string, difficulty int) {
 	bc.Blocks = append(bc.Blocks, newBlock)
 }
 
-func (bc *Blockchain) StartBlockchain(previousBlockArray []Block) {
-	bc.Blocks = previousBlockArray
-}
-
 func (bc *Blockchain) PrintBlocks() {
 	for _, b := range bc.Blocks {
 		b.Print()
