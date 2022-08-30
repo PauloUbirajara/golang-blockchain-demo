@@ -51,7 +51,6 @@ func (b *Block) HashFromContent() string {
 
 func (b *Block) SearchHash(difficulty int) {
 	b.Nounce = 1
-	b.Timestamp = time.Now()
 	b.Difficulty = difficulty
 
 	for {

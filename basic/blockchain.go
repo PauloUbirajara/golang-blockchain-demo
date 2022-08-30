@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 )
 
 type Blockchain struct {
@@ -27,6 +28,7 @@ func (bc *Blockchain) NewBlock(content string, difficulty int) {
 		Index:        lastBlock.Index + 1,
 		Content:      content,
 		PreviousHash: lastBlock.CurrentHash,
+		Timestamp:    time.Now(),
 	}
 
 	newBlock.SearchHash(difficulty)
