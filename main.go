@@ -1,13 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	b "golang-blockchain-demo/basic"
-	"io/fs"
-	"io/ioutil"
-	"log"
-	"os"
 )
 
 func main() {

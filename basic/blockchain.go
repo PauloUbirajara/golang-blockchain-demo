@@ -1,5 +1,14 @@
 package basic
 
+import (
+	"encoding/json"
+	"fmt"
+	"io/fs"
+	"io/ioutil"
+	"log"
+	"os"
+)
+
 type Blockchain struct {
 	Blocks []Block
 }
