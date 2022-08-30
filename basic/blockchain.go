@@ -42,6 +42,29 @@ func (bc *Blockchain) PrintBlocks() {
 	}
 }
 
+func (bc *Blockchain) Validate() bool {
+	for i := 0; i < len(bc.Blocks)-1; i++ {
+		currentBlock := bc.Blocks[i]
+
+		expectedHash := currentBlock.CurrentHash
+		currentBlock.SearchHash(currentBlock.Difficulty)
+
+		for i := range currentBlock.CurrentHash {
+			if currentBlock.CurrentHash[i] != expectedHash[i] {
+				return false
+			}
+		}
+
+		nextBlock := bc.Blocks[i+1]
+
+		if currentBlock.CurrentHash != nextBlock.PreviousHash {
+			return false
+		}
+	}
+
+	return true
+}
+
 func (bc *Blockchain) SaveToJSON(outputName string) {
 	file, _ := json.MarshalIndent(bc.Blocks, "", "  ")
 	_ = ioutil.WriteFile(outputName, file, fs.ModeAppend.Perm())

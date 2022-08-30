@@ -19,5 +19,6 @@ func main() {
 	}
 
 	blockchain.PrintBlocks()
-	blockchain.SaveToJSON("blocks.json")
+	fmt.Println("Validado", blockchain.Validate())
+	// blockchain.SaveToJSON("blocks.json")
 }
