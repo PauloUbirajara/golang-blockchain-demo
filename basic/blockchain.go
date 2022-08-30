@@ -30,3 +30,30 @@ func (bc *Blockchain) PrintBlocks() {
 		b.Print()
 	}
 }
+
+func (bc *Blockchain) SaveToJSON(outputName string) {
+	file, _ := json.MarshalIndent(bc.Blocks, "", "  ")
+	_ = ioutil.WriteFile(outputName, file, fs.ModeAppend.Perm())
+}
+
+func (bc *Blockchain) LoadFromJSON(inputName string) {
+	jsonFile, err := os.Open(inputName)
+
+	if err != nil {
+		log.Panic("Não foi possível carregar blockchain a partir de JSON", err)
+		return
+	}
+
+	log.Default().Println("Arquivo aberto sem erros")
+	fmt.Println("Arquivo aberto sem erros")
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var blocks []Block
+	json.Unmarshal(byteValue, &blocks)
+
+	bc.Blocks = blocks
+	log.Default().Println("Blockchain carregada com sucesso")
+}

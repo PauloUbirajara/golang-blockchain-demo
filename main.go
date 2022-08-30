@@ -10,33 +10,12 @@ import (
 	"os"
 )
 
-func ReadJSONFile() []b.Block {
-	jsonFile, err := os.Open("blocks.json")
-
-	if err != nil {
-		log.Println(err)
-		return make([]b.Block, 0)
-	}
-
-	fmt.Println("File Opened succesfully!")
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	var blocks []b.Block
-	json.Unmarshal(byteValue, &blocks)
-
-	return blocks
-}
-
 func main() {
 	DIFFICULTY := 3
 	BLOCK_COUNT := 2
 
-	blockchain := b.Blockchain{
-		Blocks: ReadJSONFile(),
-	}
+	var blockchain b.Blockchain
+	blockchain.LoadFromJSON("blocks.json")
 
 	// Adicionar N blocos, incluindo o genesis se "blockchain" iniciar vazio
 	for i := 0; i < BLOCK_COUNT; i++ {
@@ -45,7 +24,5 @@ func main() {
 	}
 
 	blockchain.PrintBlocks()
-
-	file, _ := json.MarshalIndent(blockchain.Blocks, "", "  ")
-	_ = ioutil.WriteFile("blocks.json", file, fs.ModeAppend.Perm())
+	blockchain.SaveToJSON("blocks.json")
 }
