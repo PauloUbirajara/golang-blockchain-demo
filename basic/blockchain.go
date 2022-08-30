@@ -62,9 +62,6 @@ func (bc *Blockchain) LoadFromJSON(inputName string) {
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
-	var blocks []Block
-	json.Unmarshal(byteValue, &blocks)
-
-	bc.Blocks = blocks
+	json.Unmarshal(byteValue, &bc.Blocks)
 	log.Default().Println("Blockchain carregada com sucesso")
 }
