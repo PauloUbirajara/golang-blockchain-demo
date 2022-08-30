@@ -6,13 +6,12 @@ import (
 )
 
 func main() {
-	DIFFICULTY := 3
-	BLOCK_COUNT := 2
-
 	var blockchain b.Blockchain
-	blockchain.LoadFromJSON("blocks.json")
+	// blockchain.LoadFromJSON("blocks.json")
 
 	// Adicionar N blocos, incluindo o genesis se "blockchain" iniciar vazio
+	DIFFICULTY := 3
+	BLOCK_COUNT := 2
 	for i := 0; i < BLOCK_COUNT; i++ {
 		blockContent := fmt.Sprintf("Bloco %d", i+1)
 		blockchain.NewBlock(blockContent, DIFFICULTY)
