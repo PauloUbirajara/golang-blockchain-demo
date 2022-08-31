@@ -1,5 +1,15 @@
 package basic
 
+import (
+	"encoding/json"
+	"fmt"
+	"io/fs"
+	"io/ioutil"
+	"log"
+	"os"
+	"time"
+)
+
 type Blockchain struct {
 	Blocks []Block
 }
@@ -18,6 +28,7 @@ func (bc *Blockchain) NewBlock(content string, difficulty int) {
 		Index:        lastBlock.Index + 1,
 		Content:      content,
 		PreviousHash: lastBlock.CurrentHash,
+		Timestamp:    time.Now(),
 	}
 
 	newBlock.SearchHash(difficulty)
@@ -25,12 +36,55 @@ func (bc *Blockchain) NewBlock(content string, difficulty int) {
 	bc.Blocks = append(bc.Blocks, newBlock)
 }
 
-func (bc *Blockchain) StartBlockchain(previousBlockArray []Block) {
-	bc.Blocks = previousBlockArray
-}
-
 func (bc *Blockchain) PrintBlocks() {
 	for _, b := range bc.Blocks {
 		b.Print()
 	}
+}
+
+func (bc *Blockchain) Validate() bool {
+	for i := 0; i < len(bc.Blocks)-1; i++ {
+		currentBlock := bc.Blocks[i]
+
+		expectedHash := currentBlock.CurrentHash
+		currentBlock.SearchHash(currentBlock.Difficulty)
+
+		for i := range currentBlock.CurrentHash {
+			if currentBlock.CurrentHash[i] != expectedHash[i] {
+				return false
+			}
+		}
+
+		nextBlock := bc.Blocks[i+1]
+
+		if currentBlock.CurrentHash != nextBlock.PreviousHash {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (bc *Blockchain) SaveToJSON(outputName string) {
+	file, _ := json.MarshalIndent(bc.Blocks, "", "  ")
+	_ = ioutil.WriteFile(outputName, file, fs.ModeAppend.Perm())
+}
+
+func (bc *Blockchain) LoadFromJSON(inputName string) {
+	jsonFile, err := os.Open(inputName)
+
+	if err != nil {
+		log.Panic("Não foi possível carregar blockchain a partir de JSON", err)
+		return
+	}
+
+	log.Default().Println("Arquivo aberto sem erros")
+	fmt.Println("Arquivo aberto sem erros")
+
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	json.Unmarshal(byteValue, &bc.Blocks)
+	log.Default().Println("Blockchain carregada com sucesso")
 }

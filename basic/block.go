@@ -42,16 +42,19 @@ func (b *Block) Print() {
 	fmt.Println(finalString)
 }
 
+func (b *Block) HashFromContent() string {
+	currentHash := sha256.Sum256([]byte(b.StringForSHA256()))
+	hashString := HashToString(currentHash[:])
+
+	return hashString
+}
+
 func (b *Block) SearchHash(difficulty int) {
 	b.Nounce = 1
-	b.Timestamp = time.Now()
 	b.Difficulty = difficulty
 
 	for {
-		currentHash := sha256.Sum256([]byte(b.StringForSHA256()))
-		hashString := HashToString(currentHash[:])
-
-		//println(hashString)
+		hashString := b.HashFromContent()
 
 		if CheckIfValidHash(hashString, difficulty) {
 			b.CurrentHash = hashString
