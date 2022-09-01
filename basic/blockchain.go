@@ -3,7 +3,6 @@ package basic
 import (
 	"encoding/json"
 	"fmt"
-	"io/fs"
 	"io/ioutil"
 	"log"
 	"os"
@@ -67,7 +66,7 @@ func (bc *Blockchain) Validate() bool {
 
 func (bc *Blockchain) SaveToJSON(outputName string) {
 	file, _ := json.MarshalIndent(bc.Blocks, "", "  ")
-	_ = ioutil.WriteFile(outputName, file, fs.ModeAppend.Perm())
+	_ = ioutil.WriteFile(outputName, file, 0644)
 }
 
 func (bc *Blockchain) LoadFromJSON(inputName string) {
