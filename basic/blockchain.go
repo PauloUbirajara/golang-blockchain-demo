@@ -96,10 +96,11 @@ func merkelTree(content []string) string {
 		return HashFromTransactions(content[0])
 	}
 
-	emptyArray := make([]string, 0)
 	if len(content)%2 != 0 {
 		content = append(content, content[len(content)-1])
 	}
+
+	emptyArray := make([]string, 0)
 
 	for i := 0; i < len(content); i += 2 {
 		emptyArray = append(emptyArray, HashFromTransactions(content[i]+content[i+1]))
