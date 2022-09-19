@@ -13,7 +13,7 @@ type Blockchain struct {
 	Blocks []Block
 }
 
-func (bc *Blockchain) NewBlock(content string, difficulty int) {
+func (bc *Blockchain) NewBlock(content []string, difficulty int) {
 	DEFAULT_PREVIOUS_HASH := "secret"
 
 	var lastBlock Block
@@ -23,11 +23,14 @@ func (bc *Blockchain) NewBlock(content string, difficulty int) {
 		lastBlock = bc.Blocks[len(bc.Blocks)-1]
 	}
 
+	merkelRoot := merkelTree(content)
+
 	newBlock := Block{
 		Index:        lastBlock.Index + 1,
 		Content:      content,
 		PreviousHash: lastBlock.CurrentHash,
 		Timestamp:    time.Now(),
+		MerkelRoot: merkelRoot,
 	}
 
 	newBlock.SearchHash(difficulty)
@@ -86,4 +89,21 @@ func (bc *Blockchain) LoadFromJSON(inputName string) {
 
 	json.Unmarshal(byteValue, &bc.Blocks)
 	log.Default().Println("Blockchain carregada com sucesso")
+}
+
+func merkelTree(content []string) string {
+	if len(content) == 1 {
+		return HashFromTransactions(content[0])
+	}
+
+	emptyArray := make([]string, 0)
+	if len(content)%2 != 0 { 
+		content = append(content, content[len(content)-1])
+	}
+
+	for i := 0; i < len(content); i+=2 {	
+		emptyArray = append(emptyArray, HashFromTransactions(content[i]+content[i+1]))
+	}
+
+	return merkelTree(emptyArray)
 }

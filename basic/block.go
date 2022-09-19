@@ -7,13 +7,14 @@ import (
 )
 
 type Block struct {
-	Content      string
+	Content      []string
 	CurrentHash  string
 	Difficulty   int
 	Index        int
 	Nounce       int
 	PreviousHash string
 	Timestamp    time.Time
+	MerkelRoot string
 }
 
 func (b *Block) StringForSHA256() string {
@@ -38,6 +39,7 @@ func (b *Block) Print() {
 	finalString += fmt.Sprintln("Hash atual:", b.CurrentHash)
 	finalString += fmt.Sprintln("Hash anterior:", b.PreviousHash)
 	finalString += fmt.Sprintln("Dificuldade:", b.Difficulty)
+	finalString += fmt.Sprintln("MerkelRoot:", b.MerkelRoot)
 
 	fmt.Println(finalString)
 }

@@ -11,10 +11,9 @@ func main() {
 
 	// Adicionar N blocos, incluindo o genesis se "blockchain" iniciar vazio
 	DIFFICULTY := 3
-	BLOCK_COUNT := 2
+	BLOCK_COUNT := 3
 	for i := 0; i < BLOCK_COUNT; i++ {
-		blockContent := fmt.Sprintf("Bloco %d", i+1)
-		blockchain.NewBlock(blockContent, DIFFICULTY)
+		blockchain.NewBlock([]string{"alo", "hello", "ola", "oi2"}, DIFFICULTY)
 	}
 
 	blockchain.PrintBlocks()
