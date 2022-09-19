@@ -14,7 +14,7 @@ type Block struct {
 	Nounce       int
 	PreviousHash string
 	Timestamp    time.Time
-	MerkelRoot string
+	MerkelRoot   string
 }
 
 func (b *Block) StringForSHA256() string {
@@ -25,7 +25,7 @@ func (b *Block) StringForSHA256() string {
 	finalString += fmt.Sprintln("Timestamp:", b.Timestamp.Nanosecond())
 	finalString += fmt.Sprintln("Nounce:", b.Nounce)
 	finalString += fmt.Sprintln("Hash Anterior:", b.PreviousHash)
-	
+
 	return finalString
 }
 
