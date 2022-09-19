@@ -13,7 +13,7 @@ func main() {
 	DIFFICULTY := 3
 	BLOCK_COUNT := 3
 	for i := 0; i < BLOCK_COUNT; i++ {
-		blockchain.NewBlock([]string{"alo", "hello", "ola", "oi2"}, DIFFICULTY)
+		blockchain.NewBlock(DIFFICULTY, "alo", "hello", "ola", "oi2")
 	}
 
 	blockchain.PrintBlocks()

@@ -13,7 +13,7 @@ type Blockchain struct {
 	Blocks []Block
 }
 
-func (bc *Blockchain) NewBlock(content []string, difficulty int) {
+func (bc *Blockchain) NewBlock(difficulty int, content ...string) {
 	DEFAULT_PREVIOUS_HASH := "secret"
 
 	var lastBlock Block
@@ -30,7 +30,7 @@ func (bc *Blockchain) NewBlock(content []string, difficulty int) {
 		Content:      content,
 		PreviousHash: lastBlock.CurrentHash,
 		Timestamp:    time.Now(),
-		MerkelRoot: merkelRoot,
+		MerkelRoot:   merkelRoot,
 	}
 
 	newBlock.SearchHash(difficulty)
@@ -97,11 +97,11 @@ func merkelTree(content []string) string {
 	}
 
 	emptyArray := make([]string, 0)
-	if len(content)%2 != 0 { 
+	if len(content)%2 != 0 {
 		content = append(content, content[len(content)-1])
 	}
 
-	for i := 0; i < len(content); i+=2 {	
+	for i := 0; i < len(content); i += 2 {
 		emptyArray = append(emptyArray, HashFromTransactions(content[i]+content[i+1]))
 	}
 
