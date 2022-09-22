@@ -42,11 +42,11 @@ func BadExample4(blockchain *b.Blockchain) {
 func main() {
 	var blockchain b.Blockchain
 
-	// GoodExample1(&blockchain)
+	GoodExample1(&blockchain)
 	// BadExample1(&blockchain)
 	// BadExample2(&blockchain)
 	// BadExample3(&blockchain)
-	BadExample4(&blockchain)
+	// BadExample4(&blockchain)
 
 	blockchain.PrintBlocks()
 	fmt.Println("Validado", blockchain.Validate())
