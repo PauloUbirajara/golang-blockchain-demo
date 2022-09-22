@@ -106,7 +106,21 @@ func (bc *Blockchain) Validate() bool {
 		}
 	}
 
-	return bc.ValidateUserWalletCreation()
+	userWallets := getUserWalletsFromTransactions(bc.GetAllTransactions())
+	for _, trx := range bc.GetAllTransactions() {
+		if isValidCreationTransaction(trx) {
+			runCreationTransaction(userWallets, trx)
+			continue
+		}
+
+		if isValidTransferTransaction(userWallets, trx) {
+			runTransferTransaction(userWallets, trx)
+			continue
+		}
+		return false
+	}
+
+	return true
 }
 
 func (bc *Blockchain) SaveToJSON(outputName string) {
