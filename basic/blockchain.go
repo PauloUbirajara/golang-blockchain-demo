@@ -13,6 +13,16 @@ type Blockchain struct {
 	Blocks []Block
 }
 
+func (bc *Blockchain) GetAllTransactions() []string {
+	transactions := make([]string, 0)
+
+	for _, b := range bc.Blocks {
+		transactions = append(transactions, b.Content...)
+	}
+
+	return transactions
+}
+
 func (bc *Blockchain) NewBlock(difficulty int, content ...string) {
 	DEFAULT_PREVIOUS_HASH := "secret"
 
