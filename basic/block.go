@@ -3,6 +3,7 @@ package basic
 import (
 	"crypto/sha256"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -34,7 +35,7 @@ func (b *Block) Print() {
 
 	finalString += fmt.Sprintln("Index:", b.Index)
 	finalString += fmt.Sprintln("Nounce:", b.Nounce)
-	finalString += fmt.Sprintln("Conteúdo:", b.Content)
+	finalString += fmt.Sprintln("Conteúdo:", "[", strings.Join(b.Content, ", "), "]")
 	finalString += fmt.Sprintln("Timestamp:", b.Timestamp)
 	finalString += fmt.Sprintln("Hash atual:", b.CurrentHash)
 	finalString += fmt.Sprintln("Hash anterior:", b.PreviousHash)

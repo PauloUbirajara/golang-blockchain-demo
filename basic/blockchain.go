@@ -13,6 +13,16 @@ type Blockchain struct {
 	Blocks []Block
 }
 
+func (bc *Blockchain) GetAllTransactions() []string {
+	transactions := make([]string, 0)
+
+	for _, b := range bc.Blocks {
+		transactions = append(transactions, b.Content...)
+	}
+
+	return transactions
+}
+
 func (bc *Blockchain) NewBlock(difficulty int, content ...string) {
 	DEFAULT_PREVIOUS_HASH := "secret"
 
@@ -23,11 +33,32 @@ func (bc *Blockchain) NewBlock(difficulty int, content ...string) {
 		lastBlock = bc.Blocks[len(bc.Blocks)-1]
 	}
 
-	merkelRoot := merkelTree(content)
+	validContent := make([]string, 0)
+	userWallets := getUserWalletsFromTransactions(bc.GetAllTransactions())
+
+	for _, trx := range content {
+		if isValidCreationTransaction(trx) {
+			// Adicionar no validContent + Criar carteira com valor definido
+			validContent = append(validContent, trx)
+			runCreationTransaction(userWallets, trx)
+		}
+
+		if isValidTransferTransaction(userWallets, trx) {
+			// Adicionar no validContent + Transferir valor
+			validContent = append(validContent, trx)
+			runTransferTransaction(userWallets, trx)
+		}
+	}
+
+	if len(validContent) == 0 {
+		return
+	}
+
+	merkelRoot := merkelTree(validContent)
 
 	newBlock := Block{
 		Index:        lastBlock.Index + 1,
-		Content:      content,
+		Content:      validContent,
 		PreviousHash: lastBlock.CurrentHash,
 		Timestamp:    time.Now(),
 		MerkelRoot:   merkelRoot,
@@ -44,24 +75,49 @@ func (bc *Blockchain) PrintBlocks() {
 	}
 }
 
+func (bc *Blockchain) ValidateBlockSequence(currentBlock Block, nextBlock Block) bool {
+	expectedHash := currentBlock.CurrentHash
+	currentBlock.SearchHash(currentBlock.Difficulty)
+
+	for i := range currentBlock.CurrentHash {
+		if currentBlock.CurrentHash[i] != expectedHash[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
 func (bc *Blockchain) Validate() bool {
+	if len(bc.Blocks) == 0 {
+		return false
+	}
+
 	for i := 0; i < len(bc.Blocks)-1; i++ {
 		currentBlock := bc.Blocks[i]
-
-		expectedHash := currentBlock.CurrentHash
-		currentBlock.SearchHash(currentBlock.Difficulty)
-
-		for i := range currentBlock.CurrentHash {
-			if currentBlock.CurrentHash[i] != expectedHash[i] {
-				return false
-			}
-		}
-
 		nextBlock := bc.Blocks[i+1]
 
 		if currentBlock.CurrentHash != nextBlock.PreviousHash {
 			return false
 		}
+
+		if !bc.ValidateBlockSequence(currentBlock, nextBlock) {
+			return false
+		}
+	}
+
+	userWallets := getUserWalletsFromTransactions(bc.GetAllTransactions())
+	for _, trx := range bc.GetAllTransactions() {
+		if isValidCreationTransaction(trx) {
+			runCreationTransaction(userWallets, trx)
+			continue
+		}
+
+		if isValidTransferTransaction(userWallets, trx) {
+			runTransferTransaction(userWallets, trx)
+			continue
+		}
+		return false
 	}
 
 	return true
